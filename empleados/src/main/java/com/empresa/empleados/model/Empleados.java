@@ -8,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Empleados {
@@ -15,14 +18,20 @@ public class Empleados {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    @Column(nullable = false)
+	    @Size(min = 6, max = 6, message = "El número de empleado debe tener 6 caracteres.")
 	    private String numeroEmpleado;
 	    @Column(nullable = false)
+	    @Size(min = 6, max = 100, message = "El nombre completo debe tener entre 6 y 100 caracteres.")
 	    private String nombreCompletoEmpleado;
 	    @Column(nullable = false)
+	    @NotNull(message = "La fecha de nacimiento es obligatoria.")
 	    private LocalDate fechaNacimiento;
 	    @Column(nullable = false)
+	    @Pattern(regexp = "\\d{10}", message = "El número de celular debe tener exactamente 10 dígitos.")
 	    private String noCelular;
 	    @Column(nullable = false)
+	    @NotNull(message = "El estatus no puede ser nulo.")
+	    @Pattern(regexp = "0|1", message = "El estatus debe ser 0 (inactivo) o 1 (activo).")
 	    private Integer estatus;
 	    
 	 // Constructores

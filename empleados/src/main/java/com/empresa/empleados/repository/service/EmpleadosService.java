@@ -39,27 +39,28 @@ public class EmpleadosService {
     public Empleados updateEmpleado(Long id, Empleados empleadoActualizado) {
     	Empleados empleado = empleadosRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-        empleado.setNumeroEmpleado(empleadoActualizado.getNumeroEmpleado());
+    	
+        if (!empleado.getNumeroEmpleado().equals(empleadoActualizado.getNumeroEmpleado())) {
+            throw new IllegalArgumentException("El número de empleado no puede ser modificado.");
+        }// Validación del número de empleado
+
+        if (empleadoActualizado.getEstatus() != null && empleadoActualizado.getEstatus() != 0 && empleadoActualizado.getEstatus() != 1) {
+            throw new IllegalArgumentException("El estatus solo puede ser 0 (inactivo) o 1 (activo).");
+        }// Validación del estatus
+        
         empleado.setNombreCompletoEmpleado(empleadoActualizado.getNombreCompletoEmpleado());
         empleado.setFechaNacimiento(empleadoActualizado.getFechaNacimiento());
         empleado.setNoCelular(empleadoActualizado.getNoCelular());
         empleado.setEstatus(empleadoActualizado.getEstatus());
+        
         return empleadosRepository.save(empleado);
-    }//updateEmpleado
+    }// Method updateEmpleado
 
     public void inactivarEmpleado(Long id) {
         Empleados empleado = empleadosRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         empleado.setEstatus(0);
         empleadosRepository.save(empleado);
-    }
+    }//Method inactivarEmpleado
     
-    public Empleados deleteEmpleado(Long id) {
-    	Empleados empleado = null;
-		if(empleadosRepository.existsById(id)) {
-				empleado = empleadosRepository.findById(id).get();
-				empleadosRepository.deleteById(id);
-			}//ifexist
-		return empleado;
-	}//class deleteUsuario
-}
+}//classEmpleados Service

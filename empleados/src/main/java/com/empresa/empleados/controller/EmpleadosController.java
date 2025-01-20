@@ -2,7 +2,8 @@ package com.empresa.empleados.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,14 +29,18 @@ public class EmpleadosController {
         return empleadosService.getAllEmpleados();
     }//getAllEmpleados
     
-    @GetMapping(path = "{id}") //https://localhost:8080/api/productos/1
-	public Empleados getEmpleado(@PathVariable("id")Long Id) {
-		return empleadosService.getEmpleado(Id);
-	}//getEmpleado
+    @GetMapping("/{id}")
+    public Empleados getEmpleado(@PathVariable Long id) {
+        return empleadosService.getEmpleado(id);
+    }//getEmpleado
 
     @PostMapping
-    public Empleados addEmpleado(@RequestBody Empleados empleado) {
-        return empleadosService.addEmpleado(empleado);
+    public ResponseEntity<Empleados> addEmpleado(@RequestBody Empleados empleado) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(empleadosService.addEmpleado(empleado));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
     }//addEmpleado
     
     @PutMapping("/{id}")
@@ -43,9 +48,10 @@ public class EmpleadosController {
     	return empleadosService.updateEmpleado(id, empleado);
     }//updateEmpleado
     
-    @DeleteMapping("/{id}") // Corregido
-    public Empleados deleteEmpleado(@PathVariable("id") Long id) {
-        return empleadosService.deleteEmpleado(id);
-	}//deleteEmpleados
+    @PutMapping("/{id}/inactivar")
+    public ResponseEntity<Void> inactivarEmpleado(@PathVariable Long id) {
+        empleadosService.inactivarEmpleado(id);
+        return ResponseEntity.noContent().build();
+    }//putMapping
     
 }//classEmpleadosController
